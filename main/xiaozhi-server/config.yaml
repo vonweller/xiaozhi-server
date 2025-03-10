@@ -20,8 +20,8 @@ server:
       - token: "your-token2"  # 设备2的token
         name: "your-device-name2" # 设备2标识
     # 可选:设备白名单，如果设置了白名单，那么白名单的机器无论是什么token都可以连接。
-    #allowed_devices:
-    #  - "24:0A:C4:1D:3B:F0"  # MAC地址列表
+    allowed_devices:
+      - "24:0A:C4:1D:3B:F0"  # MAC地址列表
 log:
   # 设置控制台输出的日志格式，时间、日志级别、标签、消息
   log_format: "<green>{time:YY-MM-DD HH:mm:ss}</green>[<light-blue>{extra[tag]}</light-blue>] - <level>{level}</level> - <light-green>{message}</light-green>"
@@ -53,6 +53,9 @@ prompt: |
   请注意，要像一个人一样说话，请不要回复表情符号、代码、和xml标签。
   当前时间是:{date_time}，现在我正在和你进行语音聊天，我们开始吧。
   如果用户希望结束对话，请在最后说“拜拜”或“再见”。
+  如果用户希望打开摄像头等类型的要求时,你只需要回复“好的正在打开”
+  如果用户希望识别画面，识别图片，识别场景等类型的要求时“你只需要回复正在识别”
+
 # 使用完声音文件后删除文件(Delete the sound file when you are done using it)
 delete_audio: true
 
@@ -99,7 +102,7 @@ Memory:
     type: mem0ai
     # https://app.mem0.ai/dashboard/api-keys
     # 每月有1000次免费调用
-    api_key: 你的mem0ai api key
+    api_key: m0-XduPX4yNmHTvhXb2ZqAZymMj5YtTRf6yBztDRuBm
   nomem:
     # 不想使用记忆功能，可以使用nomem 
     type: nomem
@@ -157,7 +160,7 @@ LLM:
     # 可在这里找到你的api key https://bigmodel.cn/usercenter/proj-mgmt/apikeys
     model_name: glm-4-flash
     url: https://open.bigmodel.cn/api/paas/v4/
-    api_key: 你的chat-glm web key
+    api_key: cbca2c528eb74d5d87a858c3dc3bec8f.3CSu4rLW5sEFw0C8
   OllamaLLM:
     # 定义LLM API类型
     type: ollama

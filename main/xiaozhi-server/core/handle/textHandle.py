@@ -4,7 +4,8 @@ from core.handle.abortHandle import handleAbortMessage
 from core.handle.helloHandle import handleHelloMessage
 from core.handle.receiveAudioHandle import startToChat
 from core.handle.iotHandle import handleIotDescriptors, handleIotStatus
-
+from core.handle.sendAudioHandle import send_stt_message
+from core.handle.VLHandle import handleVLMessage
 TAG = __name__
 logger = setup_logging()
 
@@ -41,6 +42,18 @@ async def handleTextMessage(conn, message):
             if "descriptors" in msg_json:
                 await handleIotDescriptors(conn, msg_json["descriptors"])
             if "states" in msg_json:
-                await handleIotStatus(conn, msg_json["states"])  
+                await handleIotStatus(conn, msg_json["states"])
+         ####视觉识别添加能力 image中应该包含图片数据
+        elif msg_json["type"] == "VL":
+            await handleVLMessage(conn, msg_json)
+        ####客户端文字对话能力 inputStr中应该包含text文字数据
+        elif msg_json['type'] == 'inputStr':
+            print('text:', msg_json['text'])
+            text = msg_json['text']
+            if len(text) > 0:
+                await startToChat(conn, text)
+            else:
+                await send_stt_message(conn, text)
+                conn.executor.submit(conn.chat, text)
     except json.JSONDecodeError:
         await conn.websocket.send(message)
