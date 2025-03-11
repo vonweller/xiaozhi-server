@@ -304,8 +304,6 @@ class ConnectionHandler:
 
         # Define intent functions
         functions = get_functions()
-        #print('当前函数包含')
-        #print(functions)
         response_message = []
         processed_chars = 0  # 跟踪已处理的字符位置
    
