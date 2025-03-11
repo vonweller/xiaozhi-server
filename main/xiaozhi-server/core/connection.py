@@ -302,8 +302,12 @@ class ConnectionHandler:
 
         self.dialogue.put(Message(role="user", content=query))
 
-        # Define intent functions
+        # 初始化服务端functioncall
         functions = get_functions()
+        #将客户端自定义iot函数列表加入服务端函数列表
+        if len(self.iot_descriptors) > 0:
+            self.logger.bind(tag=TAG).info(f"客户端自定义iot函数列表加入服务端函数列表")
+            functions.append(self.iot_descriptors)
         response_message = []
         processed_chars = 0  # 跟踪已处理的字符位置
    
