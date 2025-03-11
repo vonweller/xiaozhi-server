@@ -35,6 +35,8 @@ def get_functions():
 
 def handle_llm_function_call(conn, function_call_data):
     try:
+        print('函数回调')
+        print(function_call_data)
         function_name = function_call_data["name"]
 
         if function_name == "handle_exit_intent":
@@ -66,8 +68,39 @@ def handle_llm_function_call(conn, function_call_data):
                 return ActionResponse(action=Action.RESPONSE, result="退出意图已处理", response="还想听什么歌？")
             except Exception as e:
                 logger.bind(tag=TAG).error(f"处理音乐意图错误: {e}")
+
+        elif function_name == "set_servo_angle":
+            # 设置舵机角度
+            try:
+                arguments = json.loads(function_call_data["arguments"])
+                servo_id = arguments.get("servo_id")
+                angle = arguments.get("angle")
+
+                # 执行舵机控制命令
+                #conn.servo_handler.set_angle(servo_id, angle)
+                logger.bind(tag=TAG).info(f"舵机 {servo_id} 已设置为角度 {angle}")
+                return ActionResponse(action=Action.RESPONSE, result="舵机角度设置成功",
+                                      response=f"舵机 {servo_id} 已设置为角度 {angle}")
+            except Exception as e:
+                logger.bind(tag=TAG).error(f"设置舵机角度错误: {e}")
+
+        elif function_name == "set_servo_speed":
+            # 设置舵机速度
+            try:
+                arguments = json.loads(function_call_data["arguments"])
+                servo_id = arguments.get("servo_id")
+                speed = arguments.get("speed")
+
+                # 执行舵机速度控制命令
+                #conn.servo_handler.set_speed(servo_id, speed)
+                logger.bind(tag=TAG).info(f"舵机 {servo_id} 速度已设置为 {speed}")
+                return ActionResponse(action=Action.RESPONSE, result="舵机速度设置成功",
+                                      response=f"舵机 {servo_id} 速度已设置为 {speed}")
+            except Exception as e:
+                logger.bind(tag=TAG).error(f"设置舵机速度错误: {e}")
+
         else:
-            return ActionResponse(action=Action.NOTFOUND, result="没有找到对应的函数", response="")
+            return ActionResponse(action=Action.NOTFOUND, result="没有找到对应的函数", response="对不起当前没有预设定对应的功能")
     except Exception as e:
         logger.bind(tag=TAG).error(f"处理function call错误: {e}")
 
@@ -148,14 +181,11 @@ async def process_intent_result(conn, intent, original_text):
     # 处理退出意图
     if "结束聊天" in intent:
         logger.bind(tag=TAG).info(f"识别到退出意图: {intent}")
-
         # 如果正在播放音乐，可以关了 TODO
-
         # 如果是明确的离别意图，发送告别语并关闭连接
         await send_stt_message(conn, original_text)
         conn.executor.submit(conn.chat_and_close, original_text)
         return True
-
     # 处理播放音乐意图
     if "播放音乐" in intent:
         logger.bind(tag=TAG).info(f"识别到音乐播放意图: {intent}")

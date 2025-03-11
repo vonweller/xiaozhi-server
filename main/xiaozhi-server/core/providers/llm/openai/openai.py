@@ -1,8 +1,10 @@
 import openai
 from core.utils.util import check_model_key
 from core.providers.llm.base import LLMProviderBase
+from config.logger import setup_logging
 
-
+TAG = __name__
+logger = setup_logging()
 class LLMProvider(LLMProviderBase):
     def __init__(self, config):
         self.model_name = config.get("model_name")
@@ -54,6 +56,9 @@ class LLMProvider(LLMProviderBase):
                 messages=dialogue,
                 stream=True,
                 tools=functions,
+                # 设置输出数据的模态，当前支持["text"]
+                modalities=["text"],
+                stream_options={"include_usage": True}
             )
             
             for chunk in stream:
