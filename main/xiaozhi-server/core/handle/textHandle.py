@@ -48,7 +48,6 @@ async def handleTextMessage(conn, message):
             await handleVLMessage(conn, msg_json)
         ####客户端文字对话能力 inputStr中应该包含text文字数据
         elif msg_json['type'] == 'inputStr':
-            print('text:', msg_json['text'])
             text = msg_json['text']
             if len(text) > 0:
                 await startToChat(conn, text)
