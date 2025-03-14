@@ -437,6 +437,10 @@ class ConnectionHandler:
             text = result.response
         if result.action == Action.NOTFOUND:
             text = result.response
+            self.recode_first_last_text(text, text_index)
+            future = self.executor.submit(self.speak_and_play, text, text_index)
+            self.tts_queue.put(future)
+            self.dialogue.put(Message(role="assistant", content=text))
 
         
 

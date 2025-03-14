@@ -67,6 +67,35 @@ def handle_llm_function_call(conn, function_call_data):
                 return ActionResponse(action=Action.RESPONSE, result="退出意图已处理", response="还想听什么歌？")
             except Exception as e:
                 logger.bind(tag=TAG).error(f"处理音乐意图错误: {e}")
+
+        elif function_name == "set_servo_angle":
+            # 设置舵机角度
+            try:
+                arguments = json.loads(function_call_data["arguments"])
+                servo_id = arguments.get("servo_id")
+                angle = arguments.get("angle")
+                # 执行舵机控制命令
+                #conn.servo_handler.set_angle(servo_id, angle)
+                logger.bind(tag=TAG).info(f"舵机 {servo_id} 已设置为角度 {angle}")
+                return ActionResponse(action=Action.RESPONSE, result="舵机角度设置成功",
+                                      response=f"舵机 {servo_id} 已设置为角度 {angle}")
+            except Exception as e:
+                logger.bind(tag=TAG).error(f"设置舵机角度错误: {e}")
+
+        elif function_name == "set_servo_speed":
+            # 设置舵机速度
+            try:
+                arguments = json.loads(function_call_data["arguments"])
+                servo_id = arguments.get("servo_id")
+                speed = arguments.get("speed")
+
+                # 执行舵机速度控制命令
+               # conn.servo_handler.set_speed(servo_id, speed)
+                logger.bind(tag=TAG).info(f"舵机 {servo_id} 速度已设置为 {speed}")
+                return ActionResponse(action=Action.RESPONSE, result="舵机速度设置成功",
+                                      response=f"舵机 {servo_id} 速度已设置为 {speed}")
+            except Exception as e:
+                logger.bind(tag=TAG).error(f"设置舵机速度错误: {e}")
         else:
             return ActionResponse(action=Action.NOTFOUND, result="没有找到对应的函数", response="没有找到对应的函数处理相对于的功能呢，你可以需要添加预设的对应函数处理呢")
     except Exception as e:
